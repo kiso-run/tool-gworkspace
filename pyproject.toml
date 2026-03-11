@@ -1,0 +1,15 @@
+[project]
+name = "skill-gworkspace"
+version = "0.1.0"
+description = "Google Workspace skill for Kiso — wraps the gws CLI"
+requires-python = ">=3.11"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.uv]
+managed = true
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

@@ -1,0 +1,72 @@
+[kiso]
+type = "skill"
+name = "gworkspace"
+version = "0.1.0"
+description = "Google Workspace automation via the gws CLI"
+
+[kiso.skill]
+summary = "Access Google Workspace: Drive, Gmail, Calendar, Sheets and any other Workspace API via the gws CLI"
+usage_guide = """\
+Use this skill to interact with Google Workspace services. The skill wraps \
+the gws CLI (@googleworkspace/cli) which dynamically supports all Google \
+Workspace APIs.
+
+Actions:
+  auth_status     — check if gws is authenticated
+  drive_list      — list files in Google Drive (optional query filter)
+  drive_read      — download/read a file from Drive
+  drive_upload    — upload a file to Drive
+  gmail_list      — list Gmail messages (optional query filter)
+  gmail_read      — read a specific Gmail message
+  gmail_send      — send an email
+  calendar_list   — list calendar events (optional time range)
+  calendar_create — create a calendar event
+  sheets_read     — read data from a spreadsheet
+  sheets_write    — write data to a spreadsheet
+  raw             — run any arbitrary gws command
+
+Prerequisites:
+  The gws CLI must be installed and authenticated before using this skill. \
+Run 'gws auth setup' and 'gws auth login' to authenticate.
+
+Workflow:
+  1. Use auth_status to verify authentication
+  2. Use high-level actions (drive_list, gmail_send, etc.) for common tasks
+  3. Use 'raw' for any Workspace API not covered by high-level actions
+
+The 'raw' action accepts a 'command' string with gws CLI arguments, e.g. \
+command='drive files list --params {"pageSize": 5}'. This gives full access \
+to any Google Workspace API endpoint."""
+
+[kiso.skill.args]
+action = { type = "string", required = true, description = "one of: auth_status, drive_list, drive_read, drive_upload, gmail_list, gmail_read, gmail_send, calendar_list, calendar_create, sheets_read, sheets_write, raw" }
+command = { type = "string", required = false, description = "gws CLI arguments for 'raw' action (e.g. 'drive files list --params {\"pageSize\": 5}')" }
+query = { type = "string", required = false, description = "search query for drive_list/gmail_list" }
+file_id = { type = "string", required = false, description = "Google Drive file ID for drive_read" }
+file_path = { type = "string", required = false, description = "local file path for drive_upload" }
+folder_id = { type = "string", required = false, description = "Drive folder ID for drive_upload" }
+name = { type = "string", required = false, description = "file name for drive_upload" }
+format = { type = "string", required = false, description = "export format for drive_read (e.g. 'text/plain', 'application/pdf')" }
+message_id = { type = "string", required = false, description = "Gmail message ID for gmail_read" }
+to = { type = "string", required = false, description = "recipient email for gmail_send" }
+subject = { type = "string", required = false, description = "email subject for gmail_send" }
+body = { type = "string", required = false, description = "email body for gmail_send" }
+cc = { type = "string", required = false, description = "CC recipients for gmail_send (comma-separated)" }
+bcc = { type = "string", required = false, description = "BCC recipients for gmail_send (comma-separated)" }
+page_size = { type = "string", required = false, description = "max results for list actions (default: 10)" }
+time_min = { type = "string", required = false, description = "start time for calendar_list (ISO 8601)" }
+time_max = { type = "string", required = false, description = "end time for calendar_list (ISO 8601)" }
+calendar_id = { type = "string", required = false, description = "calendar ID (default: 'primary')" }
+summary = { type = "string", required = false, description = "event title for calendar_create" }
+start = { type = "string", required = false, description = "event start for calendar_create (ISO 8601 or YYYY-MM-DD)" }
+end = { type = "string", required = false, description = "event end for calendar_create (ISO 8601 or YYYY-MM-DD)" }
+description = { type = "string", required = false, description = "event description for calendar_create" }
+location = { type = "string", required = false, description = "event location for calendar_create" }
+attendees = { type = "string", required = false, description = "comma-separated attendee emails for calendar_create" }
+spreadsheet_id = { type = "string", required = false, description = "Google Sheets spreadsheet ID" }
+range = { type = "string", required = false, description = "cell range for sheets_read/sheets_write (e.g. 'Sheet1!A1:C10')" }
+values = { type = "string", required = false, description = "JSON array of rows for sheets_write (e.g. '[[\"a\",\"b\"],[\"c\",\"d\"]]')" }
+
+[kiso.deps]
+python = ">=3.11"
+bin = ["gws"]
