@@ -1,13 +1,13 @@
 [kiso]
-type = "skill"
+type = "tool"
 name = "gworkspace"
 version = "0.1.0"
 description = "Google Workspace automation via the gws CLI"
 
-[kiso.skill]
+[kiso.tool]
 summary = "Access Google Workspace: Drive, Gmail, Calendar, Sheets and any other Workspace API via the gws CLI"
 usage_guide = """\
-Use this skill to interact with Google Workspace services. The skill wraps \
+Use this tool to interact with Google Workspace services. The tool wraps \
 the gws CLI (@googleworkspace/cli) which dynamically supports all Google \
 Workspace APIs.
 
@@ -26,7 +26,7 @@ Actions:
   raw             — run any arbitrary gws command
 
 Prerequisites:
-  The gws CLI must be installed and authenticated before using this skill. \
+  The gws CLI must be installed and authenticated before using this tool. \
 Run 'gws auth setup' and 'gws auth login' to authenticate.
 
 Workflow:
@@ -38,7 +38,7 @@ The 'raw' action accepts a 'command' string with gws CLI arguments, e.g. \
 command='drive files list --params {"pageSize": 5}'. This gives full access \
 to any Google Workspace API endpoint."""
 
-[kiso.skill.args]
+[kiso.tool.args]
 action = { type = "string", required = true, description = "one of: auth_status, drive_list, drive_read, drive_upload, gmail_list, gmail_read, gmail_send, calendar_list, calendar_create, sheets_read, sheets_write, raw" }
 command = { type = "string", required = false, description = "gws CLI arguments for 'raw' action (e.g. 'drive files list --params {\"pageSize\": 5}')" }
 query = { type = "string", required = false, description = "search query for drive_list/gmail_list" }

@@ -1,7 +1,7 @@
 [project]
-name = "skill-gworkspace"
+name = "tool-gworkspace"
 version = "0.1.0"
-description = "Google Workspace skill for Kiso — wraps the gws CLI"
+description = "Google Workspace tool for Kiso — wraps the gws CLI"
 requires-python = ">=3.11"
 dependencies = []
 

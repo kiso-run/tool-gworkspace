@@ -1,6 +1,6 @@
-"""skill-gworkspace — Google Workspace automation via the gws CLI.
+"""tool-gworkspace — Google Workspace automation via the gws CLI.
 
-Subprocess contract (same as all kiso skills):
+Subprocess contract (same as all kiso tools):
   stdin:  JSON {args, session, workspace, session_secrets, plan_outputs}
   stdout: result text on success
   stderr: error description on failure

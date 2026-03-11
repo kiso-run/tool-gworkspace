@@ -1,14 +1,14 @@
-# skill-gworkspace — Development Plan
+# tool-gworkspace — Development Plan
 
 ## Overview
 
-Google Workspace skill for kiso. Wraps il CLI `gws`
+Google Workspace tool for kiso. Wraps il CLI `gws`
 (@googleworkspace/cli) per dare al planner accesso a Drive, Gmail,
 Calendar, Sheets e qualsiasi altro servizio Workspace — tutto via
 subprocess JSON stdin/stdout.
 
 `gws` genera i comandi dinamicamente dal Discovery Service di Google,
-quindi la skill espone sia azioni di alto livello (drive_list, gmail_send,
+quindi il tool espone sia azioni di alto livello (drive_list, gmail_send,
 ecc.) sia un'azione `raw` per qualsiasi endpoint non coperto.
 
 **Current status:** devplan — nessun codice ancora.
@@ -16,7 +16,7 @@ ecc.) sia un'azione `raw` per qualsiasi endpoint non coperto.
 ## Architecture
 
 ```
-skill-gworkspace/
+tool-gworkspace/
 ├── kiso.toml          # manifest: args schema, deps, usage guide
 ├── pyproject.toml     # Python deps (nessuna oltre stdlib)
 ├── run.py             # entry point + dispatch (~300 LOC target)
@@ -32,11 +32,11 @@ skill-gworkspace/
 
 **Key design decisions:**
 
-- Single-file `run.py` — coerente con skill-browser.
-- Thin wrapper su `gws` — la skill non reimplementa le API Google, chiama
+- Single-file `run.py` — coerente con tool-browser.
+- Thin wrapper su `gws` — il tool non reimplementa le API Google, chiama
   `gws <service> <resource> <method>` via subprocess e ritorna il JSON.
 - Auth via env var `GOOGLE_WORKSPACE_CLI_TOKEN` oppure credentials file
-  in `~/.gws/` — la skill non gestisce il flusso OAuth interattivo.
+  in `~/.gws/` — il tool non gestisce il flusso OAuth interattivo.
 - Azioni di alto livello per i casi più comuni + `raw` come escape hatch.
 - Output JSON parsato e formattato in modo leggibile per il planner.
 
@@ -61,7 +61,7 @@ skill-gworkspace/
 
 ### M1 — Scaffold + dispatch + raw action
 
-**Problem:** La skill non esiste, serve la struttura base e un modo per
+**Problem:** Il tool non esiste, serve la struttura base e un modo per
 eseguire qualsiasi comando gws.
 
 **Change:**
@@ -201,7 +201,7 @@ eseguire qualsiasi comando gws.
 ## Known Issues / Improvement Ideas
 
 - Auth flow interattivo non supportato — serve setup manuale di `gws auth`
-  prima di usare la skill
+  prima di usare il tool
 - Nessun supporto per attachment Gmail (invio/download)
 - Nessun supporto per Google Docs editing (solo read via export)
 - Drive upload limitato a file nel workspace
