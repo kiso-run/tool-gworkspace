@@ -11,7 +11,7 @@ subprocess JSON stdin/stdout.
 quindi il tool espone sia azioni di alto livello (drive_list, gmail_send,
 ecc.) sia un'azione `raw` per qualsiasi endpoint non coperto.
 
-**Current status:** devplan — nessun codice ancora.
+**Current status:** M1-M8 complete — full implementation with comprehensive test coverage.
 
 ## Architecture
 
@@ -22,9 +22,13 @@ tool-gworkspace/
 ├── run.py             # entry point + dispatch (~300 LOC target)
 ├── deps.sh            # installa gws via npm
 ├── tests/
-│   ├── conftest.py    # shared fixtures, mock subprocess
-│   ├── test_dispatch.py
-│   └── test_actions.py
+│   ├── conftest.py      # shared fixtures, mock subprocess
+│   ├── test_actions.py  # _run_gws, _truncate, auth_status, raw, formatters
+│   ├── test_dispatch.py # dispatch routing, unknown action
+│   ├── test_drive.py    # drive_list, drive_read, drive_upload
+│   ├── test_gmail.py    # gmail_list, gmail_read, gmail_send, _extract_gmail_body
+│   ├── test_calendar.py # calendar_list, calendar_create
+│   └── test_sheets.py   # sheets_read, sheets_write
 ├── README.md
 ├── DEVPLAN.md
 └── LICENSE
@@ -44,18 +48,18 @@ tool-gworkspace/
 
 | Action           | Description                                      | Status  |
 |------------------|--------------------------------------------------|---------|
-| auth_status      | Verifica se gws è autenticato                    | planned |
-| drive_list       | Lista file in Drive (con query opzionale)        | planned |
-| drive_read       | Scarica/leggi contenuto di un file               | planned |
-| drive_upload     | Carica un file su Drive                          | planned |
-| gmail_list       | Lista messaggi Gmail (con query opzionale)       | planned |
-| gmail_read       | Leggi un messaggio specifico                     | planned |
-| gmail_send       | Invia un'email                                   | planned |
-| calendar_list    | Lista eventi di un calendario                    | planned |
-| calendar_create  | Crea un evento nel calendario                    | planned |
-| sheets_read      | Leggi dati da un foglio                          | planned |
-| sheets_write     | Scrivi dati in un foglio                         | planned |
-| raw              | Esegui qualsiasi comando gws arbitrario          | planned |
+| auth_status      | Verifica se gws è autenticato                    | done    |
+| drive_list       | Lista file in Drive (con query opzionale)        | done    |
+| drive_read       | Scarica/leggi contenuto di un file               | done    |
+| drive_upload     | Carica un file su Drive                          | done    |
+| gmail_list       | Lista messaggi Gmail (con query opzionale)       | done    |
+| gmail_read       | Leggi un messaggio specifico                     | done    |
+| gmail_send       | Invia un'email                                   | done    |
+| calendar_list    | Lista eventi di un calendario                    | done    |
+| calendar_create  | Crea un evento nel calendario                    | done    |
+| sheets_read      | Leggi dati da un foglio                          | done    |
+| sheets_write     | Scrivi dati in un foglio                         | done    |
+| raw              | Esegui qualsiasi comando gws arbitrario          | done    |
 
 ## Milestones
 
@@ -188,15 +192,39 @@ eseguire qualsiasi comando gws.
 2. Troncamento automatico output > 4000 chars con nota "truncated"
 3. Messaggi di errore user-friendly (non stack trace gws)
 
+### M8 — Complete test coverage
+
+**Problem:** Existing tests only covered `_run_gws`, `_truncate`, `auth_status`,
+`raw`, dispatch routing, and formatters. All 13 action functions lacked dedicated
+unit tests for their parameter handling, gws arg construction, and error paths.
+
+**Change:**
+1. `tests/test_drive.py` — `do_drive_list` (query/no-query/page_size/format),
+   `do_drive_read` (success/export/get/missing file_id),
+   `do_drive_upload` (success/folder_id/custom name/default name/missing path/nonexistent file)
+2. `tests/test_gmail.py` — `do_gmail_list` (query/no-query/no messages/multiple messages),
+   `do_gmail_read` (success/missing message_id),
+   `_extract_gmail_body` (plain text/nested parts/no text fallback),
+   `do_gmail_send` (success/cc+bcc/missing to)
+3. `tests/test_calendar.py` — `do_calendar_list` (default calendar/time filters/custom calendar_id),
+   `do_calendar_create` (timed/all-day/description+location+attendees/missing summary/start/end)
+4. `tests/test_sheets.py` — `do_sheets_read` (success/missing spreadsheet_id/missing range),
+   `do_sheets_write` (success/missing spreadsheet_id/range/values/invalid JSON)
+
+**Test:** 69 tests total, all passing (was 24).
+
+---
+
 ## Milestone Checklist
 
-- [ ] **M1** — Scaffold + dispatch + raw action
-- [ ] **M2** — Drive actions (list, read, upload)
-- [ ] **M3** — Gmail actions (list, read, send)
-- [ ] **M4** — Calendar actions (list, create)
-- [ ] **M5** — Sheets actions (read, write)
-- [ ] **M6** — Test suite + edge cases
-- [ ] **M7** — Output formatting + planner UX
+- [x] **M1** — Scaffold + dispatch + raw action
+- [x] **M2** — Drive actions (list, read, upload)
+- [x] **M3** — Gmail actions (list, read, send)
+- [x] **M4** — Calendar actions (list, create)
+- [x] **M5** — Sheets actions (read, write)
+- [x] **M6** — Test suite + edge cases
+- [x] **M7** — Output formatting + planner UX
+- [x] **M8** — Complete test coverage
 
 ## Known Issues / Improvement Ideas
 
