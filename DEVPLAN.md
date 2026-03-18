@@ -310,6 +310,49 @@ graceful shutdown but no test verifies this behavior.
 - [x] **M8** — Complete test coverage
 - [x] **M9** — Functional tests (subprocess contract)
 - [x] **M10** — SIGTERM graceful shutdown test
+- [ ] **M11** — kiso.toml validation test
+- [ ] **M12** — Security: command injection in raw action
+
+### M11 — kiso.toml validation test
+
+**Problem:** No test verifies that the `kiso.toml` manifest is valid and
+consistent with the code — all declared args should be handled by `run.py`.
+
+**Files:** `tests/test_manifest.py` (new)
+
+**Change:**
+
+1. Parse `kiso.toml` and extract all declared arg names from `[kiso.tool.args]`
+2. Read `run.py` source and verify each declared arg appears in the code
+   (via `args.get("arg_name")` or `args["arg_name"]`)
+3. Verify `kiso.toml` is valid TOML
+4. Verify required fields exist: `[kiso]` type, name, version, `[kiso.tool]` summary
+
+- [ ] Implement manifest validation test
+- [ ] All tests pass
+
+---
+
+### M12 — Security: command injection in raw action
+
+**Problem:** `do_raw` uses `shlex.split(command)` which is safe against shell
+injection, but no test verifies this. A test should confirm that shell
+metacharacters in the `command` arg don't cause command injection.
+
+**Files:** `tests/test_security.py` (new)
+
+**Change:**
+
+1. Call `do_raw({"command": "auth status; echo INJECTED"})` — verify the
+   semicolon is treated as a literal arg to gws, not as shell injection
+2. Call `do_raw({"command": "auth status && echo INJECTED"})` — same for &&
+3. Call `do_raw({"command": "auth status $(echo INJECTED)"})` — same for $()
+4. Verify `_run_gws` receives the full string as individual args (shlex splits correctly)
+
+- [ ] Implement 3+ security tests
+- [ ] All tests pass
+
+---
 
 ## Known Issues / Improvement Ideas
 
