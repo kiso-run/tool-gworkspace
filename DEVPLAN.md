@@ -11,7 +11,7 @@ subprocess JSON stdin/stdout.
 quindi il tool espone sia azioni di alto livello (drive_list, gmail_send,
 ecc.) sia un'azione `raw` per qualsiasi endpoint non coperto.
 
-**Current status:** M1-M10 complete — full implementation with comprehensive test coverage + functional tests.
+**Current status:** M1-M12 complete — full implementation with comprehensive test coverage + functional tests + manifest validation + security tests.
 
 ## Architecture
 
@@ -310,8 +310,8 @@ graceful shutdown but no test verifies this behavior.
 - [x] **M8** — Complete test coverage
 - [x] **M9** — Functional tests (subprocess contract)
 - [x] **M10** — SIGTERM graceful shutdown test
-- [ ] **M11** — kiso.toml validation test
-- [ ] **M12** — Security: command injection in raw action
+- [x] **M11** — kiso.toml validation test
+- [x] **M12** — Security: command injection in raw action
 
 ### M11 — kiso.toml validation test
 
@@ -328,8 +328,8 @@ consistent with the code — all declared args should be handled by `run.py`.
 3. Verify `kiso.toml` is valid TOML
 4. Verify required fields exist: `[kiso]` type, name, version, `[kiso.tool]` summary
 
-- [ ] Implement manifest validation test
-- [ ] All tests pass
+- [x] Implement manifest validation test
+- [x] All tests pass
 
 ---
 
@@ -349,8 +349,8 @@ metacharacters in the `command` arg don't cause command injection.
 3. Call `do_raw({"command": "auth status $(echo INJECTED)"})` — same for $()
 4. Verify `_run_gws` receives the full string as individual args (shlex splits correctly)
 
-- [ ] Implement 3+ security tests
-- [ ] All tests pass
+- [x] Implement 3+ security tests
+- [x] All tests pass
 
 ---
 
