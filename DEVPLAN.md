@@ -11,7 +11,7 @@ subprocess JSON stdin/stdout.
 quindi il tool espone sia azioni di alto livello (drive_list, gmail_send,
 ecc.) sia un'azione `raw` per qualsiasi endpoint non coperto.
 
-**Current status:** M1-M8 complete — full implementation with comprehensive test coverage.
+**Current status:** M1-M10 complete — full implementation with comprehensive test coverage + functional tests.
 
 ## Architecture
 
@@ -273,9 +273,9 @@ Since `gws` is not available in CI, mock it with a shell shim in `$PATH`.
    - stdin: `{}` (no `args`)
    - Assert: exit code 1 (KeyError on `data["args"]`)
 
-- [ ] Create mock gws shim fixture (shell script, chmod +x, prepend to PATH)
-- [ ] Implement all 8 functional tests
-- [ ] All tests pass (unit + functional)
+- [x] Create mock gws shim fixture (shell script, chmod +x, prepend to PATH)
+- [x] Implement all 8 functional tests
+- [x] All tests pass (unit + functional)
 
 ---
 
@@ -293,8 +293,8 @@ graceful shutdown but no test verifies this behavior.
 3. Assert: process exits 0 (not killed, not stuck)
 4. Assert: no zombie process left
 
-- [ ] Implement SIGTERM test
-- [ ] Passes on Linux (SIGTERM is POSIX)
+- [x] Implement SIGTERM test
+- [x] Passes on Linux (SIGTERM is POSIX)
 
 ---
 
@@ -308,8 +308,8 @@ graceful shutdown but no test verifies this behavior.
 - [x] **M6** — Test suite + edge cases
 - [x] **M7** — Output formatting + planner UX
 - [x] **M8** — Complete test coverage
-- [ ] **M9** — Functional tests (subprocess contract)
-- [ ] **M10** — SIGTERM graceful shutdown test
+- [x] **M9** — Functional tests (subprocess contract)
+- [x] **M10** — SIGTERM graceful shutdown test
 
 ## Known Issues / Improvement Ideas
 
