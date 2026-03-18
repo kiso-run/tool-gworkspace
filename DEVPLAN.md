@@ -226,6 +226,91 @@ unit tests for their parameter handling, gws arg construction, and error paths.
 - [x] **M7** — Output formatting + planner UX
 - [x] **M8** — Complete test coverage
 
+### M9 — Functional tests (subprocess contract)
+
+**Problem:** All 69 tests are unit tests that call functions directly with
+mocked `subprocess.run`. No test exercises the actual `main()` entry point
+via the subprocess protocol (JSON on stdin → stdout/stderr + exit code).
+The `run_tool` fixture exists in `conftest.py` but no test uses it.
+
+**Files:** `tests/test_functional.py` (new)
+
+**Change:**
+
+Tests run `run.py` as a real subprocess via the `run_tool` fixture.
+Since `gws` is not available in CI, mock it with a shell shim in `$PATH`.
+
+1. **Happy path — raw action:**
+   - stdin: `{args: {action: "raw", command: "auth status"}, ...}`
+   - Mock gws shim prints `"Authenticated"`, exits 0
+   - Assert: stdout contains `"Authenticated"`, exit code 0
+
+2. **Happy path — drive_list action:**
+   - Mock gws shim prints JSON `{files: [{id: "f1", name: "doc.txt", ...}]}`
+   - Assert: stdout contains formatted file listing, exit code 0
+
+3. **Error — missing action:**
+   - stdin: `{args: {}, ...}` (no `action` key)
+   - Assert: stderr contains `'action' argument is required`, exit code 1
+
+4. **Error — unknown action:**
+   - stdin: `{args: {action: "nope"}, ...}`
+   - Assert: stderr contains `Unknown action`, exit code 1
+
+5. **Error — gws not installed:**
+   - Empty `$PATH` (no `gws` binary)
+   - Assert: stderr contains `gws CLI is not installed`, exit code 1
+
+6. **Error — gws returns failure:**
+   - Mock gws shim exits 1 with stderr `"401 Unauthorized"`
+   - Assert: stderr contains `gws error`, exit code 1
+
+7. **Malformed input — invalid JSON on stdin:**
+   - Send `"not json"` on stdin
+   - Assert: exit code 1 (json.load raises)
+
+8. **Malformed input — missing `args` key:**
+   - stdin: `{}` (no `args`)
+   - Assert: exit code 1 (KeyError on `data["args"]`)
+
+- [ ] Create mock gws shim fixture (shell script, chmod +x, prepend to PATH)
+- [ ] Implement all 8 functional tests
+- [ ] All tests pass (unit + functional)
+
+---
+
+### M10 — SIGTERM graceful shutdown test
+
+**Problem:** `run.py` registers `signal.signal(signal.SIGTERM, ...)` for
+graceful shutdown but no test verifies this behavior.
+
+**Files:** `tests/test_functional.py` (add to existing)
+
+**Change:**
+
+1. Start `run.py` as subprocess with a gws shim that sleeps 10s
+2. Send `SIGTERM` after 0.5s
+3. Assert: process exits 0 (not killed, not stuck)
+4. Assert: no zombie process left
+
+- [ ] Implement SIGTERM test
+- [ ] Passes on Linux (SIGTERM is POSIX)
+
+---
+
+## Milestone Checklist
+
+- [x] **M1** — Scaffold + dispatch + raw action
+- [x] **M2** — Drive actions (list, read, upload)
+- [x] **M3** — Gmail actions (list, read, send)
+- [x] **M4** — Calendar actions (list, create)
+- [x] **M5** — Sheets actions (read, write)
+- [x] **M6** — Test suite + edge cases
+- [x] **M7** — Output formatting + planner UX
+- [x] **M8** — Complete test coverage
+- [ ] **M9** — Functional tests (subprocess contract)
+- [ ] **M10** — SIGTERM graceful shutdown test
+
 ## Known Issues / Improvement Ideas
 
 - Auth flow interattivo non supportato — serve setup manuale di `gws auth`
