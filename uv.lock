@@ -64,7 +64,7 @@ wheels = [
 ]
 
 [[package]]
-name = "skill-gworkspace"
+name = "tool-gworkspace"
 version = "0.1.0"
 source = { virtual = "." }
 
