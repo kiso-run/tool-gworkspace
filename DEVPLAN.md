@@ -354,6 +354,11 @@ metacharacters in the `command` arg don't cause command injection.
 
 ---
 
+## History (from core plugins.md)
+
+### Compliance cleanup ✅
+- [x] Added README.md, LICENSE (MIT)
+
 ## Known Issues / Improvement Ideas
 
 - Auth flow interattivo non supportato — serve setup manuale di `gws auth`
