@@ -218,6 +218,13 @@ unit tests for their parameter handling, gws arg construction, and error paths.
 ## Milestone Checklist
 
 - [x] **M1** — Scaffold + dispatch + raw action
+
+### M13 — Planner-facing guide audit ✅
+
+- [x] Rewrite `summary` to prefer high-level actions and demote `raw`
+- [x] Clarify auth precondition via `auth_status`
+- [x] Add compact required-arg guidance for high-impact actions
+- [x] Keep the tool on the `0.2.x` line for this planner-facing structural change
 - [x] **M2** — Drive actions (list, read, upload)
 - [x] **M3** — Gmail actions (list, read, send)
 - [x] **M4** — Calendar actions (list, create)

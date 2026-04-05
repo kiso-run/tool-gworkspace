@@ -27,3 +27,12 @@ def test_required_sections_exist():
     assert "kiso" in data
     assert "tool" in data["kiso"]
     assert "args" in data["kiso"]["tool"]
+
+
+def test_usage_guide_keeps_auth_and_raw_boundaries_clear():
+    with open(KISO_TOML, "rb") as f:
+        data = tomllib.load(f)
+    guide = data["kiso"]["tool"]["usage_guide"]
+    assert "Start with `auth_status`" in guide
+    assert "use `raw` only when no dedicated action fits" in guide
+    assert "gmail_send      — to, subject, body" in guide
